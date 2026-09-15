@@ -97,6 +97,15 @@ export class ProductPage {
     return this;
   }
 
+  async verifyProductAddedToCart(expectedName: string): Promise<ProductPage> {
+    await expect(this.modalProductName).toContainText(expectedName);
+    await expect(this.modalProductPrice).toBeVisible();
+    await expect(this.modalProductSize).toBeVisible();
+    await expect(this.modalProductColor).toBeVisible();
+    await expect(this.modalProductQuantity).toBeVisible();
+    return this;
+  }
+
   async verifyCartModalContent(
     expectedName: string,
     expectedSize: string,
