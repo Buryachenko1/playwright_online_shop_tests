@@ -46,6 +46,11 @@ export class HomePage {
     const name = await this.productItemTitle.textContent();
     return name ? name.trim() : "";
   }
+
+  async getProductNames(): Promise<string[]> {
+  return await this.productItemTitle.allTextContents();
+}
+
   async openProductDetail(): Promise<ProductPage> {
     await this.productItem.click();
     return new ProductPage(this.page);
