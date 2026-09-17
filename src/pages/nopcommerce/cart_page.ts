@@ -1,96 +1,142 @@
 import { expect, type Locator, type Page } from "@playwright/test";
-import { CheckoutPage } from "./checkout_page";
-import { baseUrl } from "../../config";
 
 export class CartPage {
+  checkoutAsGuest() {
+    throw new Error("Method not implemented.");
+  }
+  verifyCheckoutLoginPageIsVisible() {
+    throw new Error("Method not implemented.");
+  }
   private readonly page: Page;
 
-  readonly cartTitle: Locator;
-  readonly cartItems: Locator;
-  readonly itemName: Locator;
-  readonly itemImage: Locator;
-  readonly itemPrice: Locator;
-  readonly itemSize: Locator;
-  readonly itemColor: Locator;
-  readonly itemQuantityInput: Locator;
-  readonly summarySubtotal: Locator;
-  readonly summaryShipping: Locator;
-  readonly summaryTotal: Locator;
-  readonly proceedToCheckoutButton: Locator;
+  readonly pageTitle: Locator;
+  readonly shoppingCartForm: Locator;
+  readonly cartTable: Locator;
+
+  readonly cartItem: Locator;
+  readonly productImage: Locator;
+  readonly productTitle: Locator;
+  readonly productAttributes: Locator;
+  readonly productPrice: Locator;
+  readonly productQuantity: Locator;
+  readonly productSubtotal: Locator;
+  readonly removeButton: Locator;
+
+  readonly continueShoppingButton: Locator;
+  readonly estimateShippingButton: Locator;
+
+  readonly cartTotals: Locator;
+  readonly orderSubtotal: Locator;
+  readonly orderTotal: Locator;
+
+  readonly termsOfService: Locator;
+  readonly termsOfServiceCheckbox: Locator;
+  readonly termsOfServiceLabel: Locator;
+  readonly termsOfServiceReadLink: Locator;
+
+  readonly checkoutButton: Locator;
 
   constructor(page: Page) {
     this.page = page;
 
-    this.cartTitle = page.locator(".cart-container h1, #main h1");
-    this.cartItems = page.locator(".cart-item");
-    this.itemName = page.locator(".cart-item .product-line-info a").first();
-    this.itemImage = page.locator(".cart-item .product-image, .cart-item img");
-    this.itemPrice = page.locator(".cart-item .product-price .price").first();
-    this.itemSize = page.locator(".cart-item .value").first();
-    this.itemColor = page.locator(".cart-item .value").nth(1);
-    this.itemQuantityInput = page.locator(
-      ".cart-item .js-cart-line-product-quantity",
-    );
-    this.summarySubtotal = page.locator("#cart-subtotal-products .value");
-    this.summaryShipping = page.locator("#cart-subtotal-shipping .value");
-    this.summaryTotal = page.locator(".cart-summary-line.cart-total .value");
-    this.proceedToCheckoutButton = page.locator(".checkout a");
-  }
+    this.pageTitle = page.locator(".shopping-cart-page .page-title h1");
+    this.shoppingCartForm = page.locator("#shopping-cart-form");
+    this.cartTable = this.shoppingCartForm.locator("table.cart");
 
-  async openCart(): Promise<CartPage> {
-    await this.page.goto(`${baseUrl}/kosik?action=show`);
-    return this;
+    this.cartItem = this.cartTable.locator(
+      'tbody tr:has(a.product-name[href="/build-your-own-computer"])',
+    );
+    this.productImage = this.cartItem.locator("td.product-picture img");
+    this.productTitle = this.cartItem.locator("a.product-name");
+    this.productAttributes = this.cartItem.locator(".attributes");
+    this.productPrice = this.cartItem.locator(".product-unit-price");
+    this.productQuantity = this.cartItem.locator("input.qty-input");
+    this.productSubtotal = this.cartItem.locator(".product-subtotal");
+    this.removeButton = this.cartItem.locator("button.remove-btn");
+
+    this.continueShoppingButton = this.shoppingCartForm.locator(
+      "button.continue-shopping-button",
+    );
+    this.estimateShippingButton = this.shoppingCartForm.locator(
+      "button.estimate-shipping-button",
+    );
+
+    this.cartTotals = this.shoppingCartForm.locator(".cart-footer .totals");
+    this.orderSubtotal = this.cartTotals.locator(
+      ".order-subtotal .value-summary",
+    );
+    this.orderTotal = this.cartTotals.locator(".order-total .value-summary");
+
+    this.termsOfService = this.cartTotals.locator(".terms-of-service");
+    this.termsOfServiceCheckbox =
+      this.termsOfService.locator("#termsofservice");
+    this.termsOfServiceLabel = this.termsOfService.locator(
+      'label[for="termsofservice"]',
+    );
+    this.termsOfServiceReadLink = this.termsOfService.locator("#read-terms");
+
+    this.checkoutButton = this.cartTotals.locator("#checkout");
   }
 
   async verifyCartPageIsVisible(): Promise<CartPage> {
-    await expect(this.cartTitle).toBeVisible();
-    await expect(this.cartItems.first()).toBeVisible();
-    await expect(this.itemImage.first()).toBeVisible();
-    await expect(this.summaryTotal).toBeVisible();
-    await expect(this.proceedToCheckoutButton).toBeVisible();
+    await expect(this.pageTitle).toBeVisible();
+    await expect(this.shoppingCartForm).toBeVisible();
+    await expect(this.cartTable).toBeVisible();
+    await expect(this.cartTotals).toBeVisible();
+    await expect(this.termsOfServiceCheckbox).toBeVisible();
+    await expect(this.checkoutButton).toBeVisible();
     return this;
   }
 
-  async verifyCartItemsCount(expectedCount: number): Promise<CartPage> {
-    await expect(this.cartItems).toHaveCount(expectedCount);
+  async verifyProductAddedToCart(expectedTitle: string): Promise<CartPage> {
+    await expect(this.cartItem).toBeVisible();
+    await expect(this.productImage).toBeVisible();
+    await expect(this.productTitle).toHaveText(expectedTitle);
+    await expect(this.productAttributes).toBeVisible();
+    await expect(this.productPrice).toBeVisible();
+    await expect(this.productQuantity).toBeVisible();
+    await expect(this.productSubtotal).toBeVisible();
+    await expect(this.removeButton).toBeVisible();
     return this;
   }
 
-  async verifyCartItemDetails(
-    expectedName: string,
-    expectedSize: string,
-    expectedColor: string,
-    expectedQuantity: number,
-  ): Promise<CartPage> {
-    await expect(this.itemName).toContainText(expectedName);
-    await expect(this.itemSize).toHaveText(expectedSize);
-    await expect(this.itemColor).toHaveText(expectedColor);
-    await expect(this.itemQuantityInput).toHaveValue(String(expectedQuantity));
+  async verifyProductPrice(expectedPrice: string): Promise<CartPage> {
+    await expect(this.productPrice).toHaveText(expectedPrice);
     return this;
   }
 
-  async verifyItemPrice(expectedPrice: string): Promise<CartPage> {
-    const cartPrice = await this.getItemPrice();
-    expect(cartPrice).toBe(expectedPrice);
+  async verifyProductQuantity(expectedQuantity: string): Promise<CartPage> {
+    await expect(this.productQuantity).toHaveValue(expectedQuantity);
     return this;
   }
 
-  async verifyCartSummary(expectedSubtotal: string): Promise<CartPage> {
-    const subtotal = await this.summarySubtotal.textContent();
-    expect(subtotal?.replace(/\u00A0/g, " ").trim()).toBe(expectedSubtotal);
-    await expect(this.summaryShipping).toBeVisible();
-    await expect(this.summaryTotal).toBeVisible();
+  async verifyProductSubtotal(expectedSubtotal: string): Promise<CartPage> {
+    await expect(this.productSubtotal).toHaveText(expectedSubtotal);
     return this;
   }
 
-  async getItemPrice(): Promise<string> {
-    const price = await this.itemPrice.textContent();
-    return price ? price.replace(/\u00A0/g, " ").trim() : "";
+  async verifyOrderTotal(expectedTotal: string): Promise<CartPage> {
+    await expect(this.orderTotal).toHaveText(expectedTotal);
+    return this;
   }
 
-  async proceedToCheckout(): Promise<CheckoutPage> {
-    await expect(this.proceedToCheckoutButton).toBeVisible();
-    await this.proceedToCheckoutButton.click();
-    return new CheckoutPage(this.page);
+  async acceptTermsOfService(): Promise<CartPage> {
+    await this.termsOfServiceCheckbox.check();
+    return this;
+  }
+
+  async verifyTermsOfServiceIsAccepted(): Promise<CartPage> {
+    await expect(this.termsOfServiceCheckbox).toBeChecked();
+    return this;
+  }
+
+  async removeProduct(): Promise<CartPage> {
+    await this.removeButton.click();
+    return this;
+  }
+
+  async proceedToCheckout(): Promise<CartPage> {
+    await this.checkoutButton.click();
+    return this;
   }
 }

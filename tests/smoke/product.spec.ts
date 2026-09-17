@@ -1,7 +1,9 @@
 import { test } from "@playwright/test";
-import { HomePage } from "../../../src/pages/presta/home_page";
+import { HomePage } from "../../src/pages/nopcommerce/home_page";
 
-test("@smoke Product detail opens and displays basic information", async ({ page }) => {
+test("@smoke Product detail opens and displays basic information", async ({
+  page,
+}) => {
   const homePage = new HomePage(page);
 
   await test.step("Open home page", async () => {

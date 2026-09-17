@@ -5,25 +5,34 @@ import { ProductPage } from "./product_page.ts";
 export class HomePage {
   private readonly page: Page;
   public readonly baseUrl = baseUrl;
-  readonly productItem: Locator;
-  readonly productItemTitle: Locator;
-  readonly headerNav: Locator;
-  readonly headerTop: Locator;
+
+  readonly productCard: Locator;
+  readonly productTitle: Locator;
+  readonly productTitles: Locator;
+  readonly header: Locator;
+  readonly headerUpper: Locator;
+  readonly headerLower: Locator;
+  readonly headerMenu: Locator;
   readonly contentWrapper: Locator;
   readonly footer: Locator;
 
   constructor(page: Page) {
     this.page = page;
 
-    this.productItem = page
-  .locator('article.product-miniature[data-id-product="1"]')
-  .first();
-    this.productItemTitle = this.productItem.locator(".product-title");
-    this.headerNav = page.locator("header .header-nav");
-    this.headerTop = page.locator("header .header-top");
-    this.contentWrapper = page.locator("#wrapper");
-    this.footer = page.locator("#footer");
+    this.productCard = page.locator('article.product-item[data-productid="1"]');
+    this.productTitle = this.productCard.locator("h2.product-title a");
+    this.productTitles = page.locator(
+      "article.product-item h2.product-title a",
+    );
+
+    this.header = page.locator("header.header");
+    this.headerUpper = this.header.locator(".header-upper");
+    this.headerLower = this.header.locator(".header-lower");
+    this.headerMenu = page.locator(".header-menu");
+    this.contentWrapper = page.locator("main#main");
+    this.footer = page.locator("footer.footer");
   }
+
   async openHomePage(): Promise<HomePage> {
     await this.page.goto(this.baseUrl);
     return this;
@@ -35,24 +44,27 @@ export class HomePage {
   }
 
   async verifyHomePageIsVisible(): Promise<HomePage> {
-    await expect(this.headerNav).toBeVisible();
-    await expect(this.headerTop).toBeVisible();
+    await expect(this.header).toBeVisible();
+    await expect(this.headerUpper).toBeVisible();
+    await expect(this.headerLower).toBeVisible();
+    await expect(this.headerMenu).toBeVisible();
     await expect(this.contentWrapper).toBeVisible();
+    await expect(this.productCard).toBeVisible();
     await expect(this.footer).toBeVisible();
     return this;
   }
 
   async getProductName(): Promise<string> {
-    const name = await this.productItemTitle.textContent();
+    const name = await this.productTitle.textContent();
     return name ? name.trim() : "";
   }
 
   async getProductNames(): Promise<string[]> {
-  return await this.productItemTitle.allTextContents();
-}
+    return await this.productTitles.allTextContents();
+  }
 
   async openProductDetail(): Promise<ProductPage> {
-    await this.productItem.click();
+    await this.productTitle.click();
     return new ProductPage(this.page);
   }
 }
