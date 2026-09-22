@@ -26,7 +26,7 @@ test("@e2e @smoke Product can be added to cart", async ({ page }) => {
   });
 
   await test.step("Open shopping cart", async () => {
-    await page.goto(`${homePage.baseUrl}cart`);
+    await page.goto("/cart");
     await cartPage.verifyCartPageIsVisible();
   });
 

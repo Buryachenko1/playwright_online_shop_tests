@@ -1,10 +1,8 @@
 import { expect, type Locator, type Page } from "@playwright/test";
-import { baseUrl } from "../../config.ts";
 import { ProductPage } from "./product_page.ts";
 
 export class HomePage {
   private readonly page: Page;
-  public readonly baseUrl = baseUrl;
 
   readonly productCard: Locator;
   readonly productTitle: Locator;
@@ -34,12 +32,12 @@ export class HomePage {
   }
 
   async openHomePage(): Promise<HomePage> {
-    await this.page.goto(this.baseUrl);
+    await this.page.goto("/");
     return this;
   }
 
   async verifyHomePageHasUrl(): Promise<HomePage> {
-    await expect.soft(this.page).toHaveURL(this.baseUrl);
+    await expect.soft(this.page).toHaveURL("/");
     return this;
   }
 
