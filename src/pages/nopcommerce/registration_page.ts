@@ -2,6 +2,7 @@ import { expect, type Locator, type Page } from "@playwright/test";
 
 export class RegistrationPage {
   private readonly page: Page;
+  private readonly url = "http://localhost:59580/register?returnUrl=%2F";
 
   readonly genderMale: Locator;
   readonly genderFemale: Locator;
@@ -9,7 +10,7 @@ export class RegistrationPage {
   readonly lastNameInput: Locator;
   readonly emailInput: Locator;
   readonly companyNameInput: Locator;
-  readonly companyVatIput: Locator;
+  readonly companyVatInput: Locator;
   readonly passwordInput: Locator;
   readonly passwordConfirmationInput: Locator;
   readonly registerButton: Locator;
@@ -23,14 +24,62 @@ export class RegistrationPage {
     this.lastNameInput = page.locator("#LastName");
     this.emailInput = page.locator("#Email");
     this.companyNameInput = page.locator("#Company");
-    this.companyVatIput = page.locator("#VatNumber");
+    this.companyVatInput = page.locator("#VatNumber");
     this.passwordInput = page.locator("#Password");
     this.passwordConfirmationInput = page.locator("#ConfirmPassword");
     this.registerButton = page.locator("#register-button");
   }
 
+  async openRegistrationNopcommerce(): Promise<RegistrationPage> {
+    await this.page.goto(this.url);
+
+    return this;
+  }
+
   async verifyRegistrationPageIsVisible(): Promise<RegistrationPage> {
     await expect(this.genderMale).toBeVisible();
+    await expect(this.genderFemale).toBeVisible();
+    await expect(this.firstNameInput).toBeVisible();
+    await expect(this.lastNameInput).toBeVisible();
+    await expect(this.emailInput).toBeVisible();
+    await expect(this.companyNameInput).toBeVisible();
+    await expect(this.companyVatInput).toBeVisible();
+    await expect(this.passwordInput).toBeVisible();
+    await expect(this.passwordConfirmationInput).toBeVisible();
+    await expect(this.registerButton).toBeVisible();
+
+    return this;
+  }
+
+  async verifyGenderRadioButtons(): Promise<RegistrationPage> {
+    await this.genderMale.check();
+    await expect(this.genderMale).toBeChecked();
+    await expect(this.genderFemale).not.toBeChecked();
+
+    await this.genderFemale.check();
+    await expect(this.genderFemale).toBeChecked();
+    await expect(this.genderMale).not.toBeChecked();
+
+    return this;
+  }
+
+  async fillRegistrationForm(
+    firstName: string,
+    lastName: string,
+    email: string,
+    password: string,
+  ): Promise<RegistrationPage> {
+    await this.firstNameInput.fill(firstName);
+    await this.lastNameInput.fill(lastName);
+    await this.emailInput.fill(email);
+    await this.passwordInput.fill(password);
+    await this.passwordConfirmationInput.fill(password);
+
+    await expect(this.firstNameInput).toHaveValue(firstName);
+    await expect(this.lastNameInput).toHaveValue(lastName);
+    await expect(this.emailInput).toHaveValue(email);
+    await expect(this.passwordInput).toHaveValue(password);
+    await expect(this.passwordConfirmationInput).toHaveValue(password);
 
     return this;
   }
