@@ -1,0 +1,53 @@
+[
+  {
+    "testName": "missing first name",
+    "overrides": {
+      "firstName": ""
+    },
+    "expectedError": "Křestní je povinný údaj."
+  },
+  {
+    "testName": "missing last name",
+    "overrides": {
+      "lastName": ""
+    },
+    "expectedError": "Příjmení je povinný údaj."
+  },
+  {
+    "testName": "invalid email - missing domain ending",
+    "overrides": {
+      "email": "test@example."
+    },
+    "expectedError": "Neplatný e-mail"
+  },
+  {
+    "testName": "invalid email - missing @",
+    "overrides": {
+      "email": "testexample.com"
+    },
+    "expectedError": "Please enter a valid email address."
+  },
+  {
+    "testName": "missing password",
+    "overrides": {
+      "password": "",
+      "confirmPassword": "ValidPassword123!"
+    },
+    "expectedError": "Heslo a potvrzení hesla se neshodují."
+  },
+  {
+    "testName": "missing password confirmation",
+    "overrides": {
+      "confirmPassword": ""
+    },
+    "expectedError": "Heslo je požadováno."
+  },
+  {
+    "testName": "missing both passwords",
+    "overrides": {
+      "password": "",
+      "confirmPassword": ""
+    },
+    "expectedError": "Heslo je požadováno."
+  }
+]

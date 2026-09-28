@@ -3,7 +3,7 @@ import { RegistrationResultPage } from "./registration_result_page";
 
 export class RegistrationPage {
   private readonly page: Page;
-  private readonly url = "http://localhost:59580/register?returnUrl=%2F";
+  private readonly url = "/register?returnUrl=%2F";
 
   readonly genderMale: Locator;
   readonly genderFemale: Locator;
@@ -15,6 +15,10 @@ export class RegistrationPage {
   readonly passwordInput: Locator;
   readonly passwordConfirmationInput: Locator;
   readonly registerButton: Locator;
+  private readonly firstNameError: Locator;
+  private readonly lastNameError: Locator;
+  private readonly emailError: Locator;
+  private readonly passwordError: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -29,6 +33,10 @@ export class RegistrationPage {
     this.passwordInput = page.locator("#Password");
     this.passwordConfirmationInput = page.locator("#ConfirmPassword");
     this.registerButton = page.locator("#register-button");
+    this.firstNameError = page.locator("#FirstName-error");
+    this.lastNameError = page.locator("#LastName-error");
+    this.emailError = page.locator("#Email-error");
+    this.passwordError = page.locator("#ConfirmPassword-error");
   }
 
   async openRegistrationNopcommerce(): Promise<RegistrationPage> {
@@ -81,5 +89,21 @@ export class RegistrationPage {
     await this.registerButton.click();
 
     return new RegistrationResultPage(this.page);
+  }
+
+  async verifyFirstNameError(expectedError: string): Promise<void> {
+    await expect(this.firstNameError).toHaveText(expectedError);
+  }
+
+  async verifyLastNameError(expectedError: string): Promise<void> {
+    await expect(this.lastNameError).toHaveText(expectedError);
+  }
+
+  async verifyEmailError(expectedError: string): Promise<void> {
+    await expect(this.emailError).toHaveText(expectedError);
+  }
+
+  async verifyPasswordError(expectedError: string): Promise<void> {
+    await expect(this.passwordError).toHaveText(expectedError);
   }
 }

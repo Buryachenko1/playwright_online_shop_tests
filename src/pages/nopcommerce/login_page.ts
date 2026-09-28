@@ -3,7 +3,7 @@ import { HomePage } from "./home_page";
 
 export class LoginPage {
   private readonly page: Page;
-  private readonly url = "http://localhost:59580/login?returnUrl=%2F";
+  private readonly url = "/login?returnUrl=%2F";
 
   readonly pageTitle: Locator;
   readonly loginForm: Locator;

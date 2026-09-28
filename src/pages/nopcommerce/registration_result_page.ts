@@ -2,7 +2,7 @@ import { expect, type Locator, type Page } from "@playwright/test";
 
 export class RegistrationResultPage {
   private readonly page: Page;
-  private readonly url = "http://localhost:59580/registerresult/1?returnUrl=/";
+  private readonly url = "/registerresult/1?returnUrl=/";
 
   readonly pageTitle: Locator;
   readonly registrationResult: Locator;
