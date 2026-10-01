@@ -1,39 +1,8 @@
 import { test } from "@playwright/test";
 import { faker } from "@faker-js/faker";
 
-import { RegistrationPage } from "../../src/pages/registration_page";
-const ddtData = [
-  {
-    testName: "missing first name",
-    overrides: { firstName: "" },
-    expectedError: "First name is required.",
-  },
-  {
-    testName: "missing last name",
-    overrides: { lastName: "" },
-    expectedError: "Last name is required.",
-  },
-  {
-    testName: "invalid email - missing domain ending",
-    overrides: { email: "invalid@email" },
-    expectedError: "Wrong email",
-  },
-  {
-    testName: "missing password",
-    overrides: { password: "" },
-    expectedError: "Password is required.",
-  },
-  {
-    testName: "missing password confirmation",
-    overrides: { confirmPassword: "" },
-    expectedError: "Password is required.",
-  },
-  {
-    testName: "missing both passwords",
-    overrides: { password: "", confirmPassword: "" },
-    expectedError: "Password is required.",
-  },
-] as const;
+import { RegistrationPage } from "../../src/pages/nopcommerce/registration_page";
+import ddtData from "../../src/assets/ddt/registration_validation_data.json";
 
 test.describe("DDT Registration validation", () => {
   let registrationPage: RegistrationPage;
@@ -72,7 +41,7 @@ test.describe("DDT Registration validation", () => {
       };
 
       await test.step("Fill registration form and submit", async () => {
-        await registrationPage.registerUser(
+        await registrationPage.registerNewUser(
           testData.firstName,
           testData.lastName,
           testData.email,
@@ -100,9 +69,7 @@ test.describe("DDT Registration validation", () => {
             break;
 
           case "missing password confirmation":
-            await registrationPage.verifyConfirmPasswordError(
-              data.expectedError,
-            );
+            await registrationPage.verifyPasswordError(data.expectedError);
             break;
 
           case "missing both passwords":

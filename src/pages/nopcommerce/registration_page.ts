@@ -15,10 +15,11 @@ export class RegistrationPage {
   readonly passwordInput: Locator;
   readonly passwordConfirmationInput: Locator;
   readonly registerButton: Locator;
+
   private readonly firstNameError: Locator;
   private readonly lastNameError: Locator;
   private readonly emailError: Locator;
-  private readonly passwordError: Locator;
+  private readonly passwordConfirmationError: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -33,10 +34,11 @@ export class RegistrationPage {
     this.passwordInput = page.locator("#Password");
     this.passwordConfirmationInput = page.locator("#ConfirmPassword");
     this.registerButton = page.locator("#register-button");
+
     this.firstNameError = page.locator("#FirstName-error");
     this.lastNameError = page.locator("#LastName-error");
     this.emailError = page.locator("#Email-error");
-    this.passwordError = page.locator("#ConfirmPassword-error");
+    this.passwordConfirmationError = page.locator("#ConfirmPassword-error");
   }
 
   async openRegistrationNopcommerce(): Promise<RegistrationPage> {
@@ -73,18 +75,19 @@ export class RegistrationPage {
     lastName: string,
     email: string,
     password: string,
+    confirmPassword: string,
   ): Promise<RegistrationResultPage> {
     await this.firstNameInput.fill(firstName);
     await this.lastNameInput.fill(lastName);
     await this.emailInput.fill(email);
     await this.passwordInput.fill(password);
-    await this.passwordConfirmationInput.fill(password);
+    await this.passwordConfirmationInput.fill(confirmPassword);
 
     await expect(this.firstNameInput).toHaveValue(firstName);
     await expect(this.lastNameInput).toHaveValue(lastName);
     await expect(this.emailInput).toHaveValue(email);
     await expect(this.passwordInput).toHaveValue(password);
-    await expect(this.passwordConfirmationInput).toHaveValue(password);
+    await expect(this.passwordConfirmationInput).toHaveValue(confirmPassword);
 
     await this.registerButton.click();
 
@@ -104,6 +107,6 @@ export class RegistrationPage {
   }
 
   async verifyPasswordError(expectedError: string): Promise<void> {
-    await expect(this.passwordError).toHaveText(expectedError);
+    await expect(this.passwordConfirmationError).toHaveText(expectedError);
   }
 }
