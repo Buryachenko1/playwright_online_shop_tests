@@ -70,7 +70,7 @@ export class AccountPage {
 
     this.optionsTitle = this.customerInfoForm
       .locator("h2.title")
-      .filter({ hasText: /^\s*Přihlásit se k odběru bulletinu\s*$/ });
+      .filter({ hasText: /^\s*Přihlásit se k odběru buletinu\s*$/ });
 
     // Personal information
     this.genderMale = page.locator("#gender-male");
@@ -100,9 +100,7 @@ export class AccountPage {
     this.addressesLink = this.accountNavigation.locator(
       ".customer-addresses a",
     );
-    this.ordersLink = this.accountNavigation.locator(
-      "customer-recurring-payments a",
-    );
+    this.ordersLink = this.accountNavigation.locator(".customer-orders a");
     this.recurringPaymentsLink = this.accountNavigation.locator(
       ".customer-recurring-payments a",
     );
