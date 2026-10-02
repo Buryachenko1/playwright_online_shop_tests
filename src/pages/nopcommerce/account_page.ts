@@ -42,6 +42,7 @@ export class AccountPage {
   readonly customerInfoLink: Locator;
   readonly addressesLink: Locator;
   readonly ordersLink: Locator;
+  readonly recurringPaymentsLink: Locator;
   readonly downloadableProductsLink: Locator;
   readonly backInStockSubscriptionsLink: Locator;
   readonly rewardPointsLink: Locator;
@@ -52,23 +53,22 @@ export class AccountPage {
 
   constructor(page: Page) {
     this.page = page;
-
     this.header = new Header(page);
 
-    // TODO: Fill in selectors before running the test.
-
     // Main content
-    this.pageTitle = page.locator(".page-title");
+    this.pageTitle = page.locator(".page-title h1");
     this.customerInfoForm = page.locator('form[action="/customer/info"]');
 
     // Section headings
-    this.personalDetailsTitle = page
+    this.personalDetailsTitle = this.customerInfoForm
       .locator("h2.title")
       .filter({ hasText: /^\s*Registrační údaje\s*$/ });
-    this.companyDetailsTitle = page
+
+    this.companyDetailsTitle = this.customerInfoForm
       .locator("h2.title")
       .filter({ hasText: /^\s*Nákup na firmu\s*$/ });
-    this.optionsTitle = page
+
+    this.optionsTitle = this.customerInfoForm
       .locator("h2.title")
       .filter({ hasText: /^\s*Přihlásit se k odběru bulletinu\s*$/ });
 
@@ -90,21 +90,34 @@ export class AccountPage {
     this.saveButton = page.locator("#save-info-button");
 
     // Left navigation
-    this.accountNavigation = page.locator(".listbox");
+    this.accountNavigation = page.locator(".block-account-navigation");
 
-    this.accountNavigationTitle = page
+    this.accountNavigationTitle = this.accountNavigation
       .locator("h2.title")
       .filter({ hasText: /^\s*Můj účet\s*$/ });
-    this.customerInfoLink = page.locator(".customer-info");
-    this.addressesLink = page.locator(".customer-addresses");
-    this.ordersLink = page.locator(".customer-recurring-payments");
-    this.downloadableProductsLink = page.locator(".downloadable-products");
-    this.backInStockSubscriptionsLink = page.locator(
-      ".back-in-stock-subscriptions",
+
+    this.customerInfoLink = this.accountNavigation.locator(".customer-info a");
+    this.addressesLink = this.accountNavigation.locator(
+      ".customer-addresses a",
     );
-    this.rewardPointsLink = page.locator(".reward-points");
-    this.changePasswordLink = page.locator(".change-password");
-    this.productReviewsLink = page.locator(".customer-reviews");
+    this.ordersLink = this.accountNavigation.locator(
+      "customer-recurring-payments a",
+    );
+    this.recurringPaymentsLink = this.accountNavigation.locator(
+      ".customer-recurring-payments a",
+    );
+    this.downloadableProductsLink = this.accountNavigation.locator(
+      ".downloadable-products a",
+    );
+    this.backInStockSubscriptionsLink = this.accountNavigation.locator(
+      ".back-in-stock-subscriptions a",
+    );
+    this.rewardPointsLink = this.accountNavigation.locator(".reward-points a");
+    this.changePasswordLink =
+      this.accountNavigation.locator(".change-password a");
+    this.productReviewsLink = this.accountNavigation.locator(
+      ".customer-reviews a",
+    );
     this.customerRfqsLink = this.accountNavigation.locator(".customer-rfqs a");
     this.customerQuotesLink =
       this.accountNavigation.locator(".customer-quotes a");
