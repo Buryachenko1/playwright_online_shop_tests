@@ -39,7 +39,7 @@ export class CartPage {
   constructor(page: Page) {
     this.page = page;
 
-    this.pageTitle = page.locator(".shopping-cart-page .page-title h1");
+    this.pageTitle = page.locator(".page-title");
     this.shoppingCartForm = page.locator("#shopping-cart-form");
     this.cartTable = this.shoppingCartForm.locator("table.cart");
 

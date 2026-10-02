@@ -45,13 +45,13 @@ test("@e2e New user can register and log in", async ({ page }) => {
     await registrationResultPage.verifyRegistrationIsSuccessful();
   });
 
-  await test.step("Open My Account", async () => {
+  await test.step("Open My Account and verify page is visible", async () => {
     await registrationResultPage.header.openMyAccount();
+    await accountPage.verifyAccountPageHasUrl();
+    await accountPage.verifyAccountPageIsVisible();
   });
 
   await test.step("Verify created user", async () => {
-    await accountPage.verifyAccountPageHasUrl();
-    await accountPage.verifyAccountPageIsVisible();
     await accountPage.verifyAccountData(userData);
   });
 

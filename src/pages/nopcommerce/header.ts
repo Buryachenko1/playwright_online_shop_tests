@@ -2,6 +2,7 @@ import { expect, type Locator, type Page } from "@playwright/test";
 import { AccountPage } from "./account_page";
 import { HomePage } from "./home_page";
 import { LoginPage } from "./login_page";
+import { CartPage } from "./cart_page";
 
 export class Header {
   private readonly page: Page;
@@ -11,6 +12,7 @@ export class Header {
   readonly logoutLink: Locator;
   readonly myAccountLink: Locator;
   readonly loginLink: Locator;
+  readonly cartLink: Locator;
   readonly headerLower: Locator;
 
   constructor(page: Page) {
@@ -21,6 +23,7 @@ export class Header {
     this.myAccountLink = this.headerUpper.locator(".ico-account");
     this.logoutLink = this.headerUpper.locator(".ico-logout");
     this.loginLink = this.headerUpper.locator(".ico-login");
+    this.cartLink = this.headerUpper.locator("#topcartlink a");
 
     this.headerLower = this.header.locator(".header-lower");
   }
@@ -49,5 +52,11 @@ export class Header {
     await this.loginLink.click();
 
     return new LoginPage(this.page);
+  }
+
+  async openCart(): Promise<CartPage> {
+    await this.cartLink.click();
+
+    return new CartPage(this.page);
   }
 }
