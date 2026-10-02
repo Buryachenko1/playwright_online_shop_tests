@@ -14,6 +14,7 @@ export class ProductPage {
 
   readonly processorSelect: Locator;
   readonly ramSelect: Locator;
+  readonly hddSelect: Locator;
   readonly quantityInput: Locator;
 
   readonly addToCartButton: Locator;
@@ -48,10 +49,12 @@ export class ProductPage {
     this.ramSelect = this.productAttributes.locator(
       'select[name="product_attribute_2"]',
     );
+
+    this.hddSelect = this.productAttributes.locator("#product_attribute_3_6");
     this.quantityInput = this.productOverview.locator("input.qty-input");
 
     this.addToCartButton = this.productOverview.locator(
-      "button.add-to-cart-button",
+      "#add-to-cart-button-1",
     );
     this.addToCompareListButton = this.productOverview.locator(
       "button.add-to-compare-list-button",
@@ -97,6 +100,7 @@ export class ProductPage {
   async configureProduct(): Promise<ProductPage> {
     await this.processorSelect.selectOption({ index: 1 });
     await this.ramSelect.selectOption({ index: 1 });
+    await this.hddSelect.check();
     return this;
   }
 
