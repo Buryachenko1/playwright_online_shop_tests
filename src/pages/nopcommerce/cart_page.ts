@@ -1,12 +1,6 @@
 import { expect, type Locator, type Page } from "@playwright/test";
 
 export class CartPage {
-  checkoutAsGuest() {
-    throw new Error("Method not implemented.");
-  }
-  verifyCheckoutLoginPageIsVisible() {
-    throw new Error("Method not implemented.");
-  }
   private readonly page: Page;
 
   readonly pageTitle: Locator;

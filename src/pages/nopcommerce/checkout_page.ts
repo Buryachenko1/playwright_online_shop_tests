@@ -57,10 +57,13 @@ export class CheckoutPage {
   readonly paymentMethodContinueButton: Locator;
 
   // Payment info
-  readonly paymentInfoSection: Locator;
-  readonly paymentInfoForm: Locator;
-  readonly paymentInfoContent: Locator;
-  readonly paymentInfoContinueButton: Locator;
+  readonly cardTypeSelect: Locator;
+  readonly cardholderName: Locator;
+  readonly cardNumber: Locator;
+  readonly expireMonthSelect: Locator;
+  readonly expireYearSelect: Locator;
+  readonly cardCode: Locator;
+  readonly paymentContinueButton: Locator;
 
   // Confirm order
   readonly confirmOrderSection: Locator;
@@ -185,6 +188,8 @@ export class CheckoutPage {
     );
 
     // Payment method
+
+    this.cardTypeSelect = page.locator("#CreditCardType");
     this.paymentMethodSection = this.checkoutSteps.locator(
       "#opc-payment_method",
     );
@@ -194,19 +199,18 @@ export class CheckoutPage {
     this.paymentMethodOptions = this.paymentMethodForm.locator(
       'input[name="paymentmethod"]',
     );
+
     this.paymentMethodContinueButton = this.paymentMethodSection.locator(
       "button.payment-method-next-step-button",
     );
 
     // Payment info
-    this.paymentInfoSection = this.checkoutSteps.locator("#opc-payment_info");
-    this.paymentInfoForm = this.paymentInfoSection.locator(
-      "#co-payment-info-form",
-    );
-    this.paymentInfoContent = this.paymentInfoSection.locator(
-      "#checkout-payment-info-load",
-    );
-    this.paymentInfoContinueButton = this.paymentInfoSection.locator(
+    this.cardholderName = this.checkoutSteps.locator("#CardholderName");
+    this.cardNumber = this.checkoutSteps.locator("#CardNumber");
+    this.expireMonthSelect = page.locator("#ExpireMonth");
+    this.expireYearSelect = page.locator("#ExpireYear");
+    this.cardCode = this.checkoutSteps.locator("#CardCode");
+    this.paymentContinueButton = this.checkoutSteps.locator(
       "button.payment-info-next-step-button",
     );
 
@@ -245,6 +249,7 @@ export class CheckoutPage {
     await this.billingLastNameInput.fill(lastName);
     await this.billingEmailInput.fill(email);
     await this.billingCountrySelect.selectOption({ label: country });
+    await this.billingStateSelect.selectOption({ label: "Hlavní město Praha" });
     await this.billingCityInput.fill(city);
     await this.billingAddress1Input.fill(address);
     await this.billingZipCodeInput.fill(zipCode);
@@ -262,18 +267,32 @@ export class CheckoutPage {
     return this;
   }
 
-  async continueFromShippingMethod(): Promise<CheckoutPage> {
+  async selectShippingMethod(): Promise<CheckoutPage> {
+    await this.shippingMethodOptions.first().check();
     await this.shippingMethodContinueButton.click();
     return this;
   }
 
-  async continueFromPaymentMethod(): Promise<CheckoutPage> {
+  async selectPaymentMethod(): Promise<CheckoutPage> {
+    await this.paymentMethodOptions.first().check();
     await this.paymentMethodContinueButton.click();
     return this;
   }
 
-  async continueFromPaymentInfo(): Promise<CheckoutPage> {
-    await this.paymentInfoContinueButton.click();
+  async fillPaymentCardDetails(
+    cardholderName: string,
+    cardNumber: string,
+    cardCode: string,
+    month: string,
+    year: string,
+  ): Promise<CheckoutPage> {
+    await this.cardTypeSelect.selectOption({ label: "Visa" });
+    await this.cardholderName.fill(cardholderName);
+    await this.cardNumber.fill(cardNumber);
+    await this.expireMonthSelect.selectOption({ label: month });
+    await this.expireYearSelect.selectOption({ label: year });
+    await this.cardCode.fill(cardCode);
+
     return this;
   }
 }

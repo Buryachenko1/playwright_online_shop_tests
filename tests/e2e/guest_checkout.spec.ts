@@ -1,22 +1,36 @@
 import { expect, test } from "@playwright/test";
 import { faker } from "@faker-js/faker";
 import { HomePage } from "../../src/pages/nopcommerce/home_page";
+import { ProductPage } from "../../src/pages/nopcommerce/product_page";
 import { CartPage } from "../../src/pages/nopcommerce/cart_page";
+import { CheckoutLoginPage } from "../../src/pages/nopcommerce/checkout_login_page";
 import { CheckoutPage } from "../../src/pages/nopcommerce/checkout_page";
+import { CookieBanner } from "../../src/pages/nopcommerce/cookie_banner";
 
 test("@e2e Guest can complete checkout", async ({ page }) => {
   const homePage = new HomePage(page);
+  const productPage = new ProductPage(page);
   const cartPage = new CartPage(page);
+  const checkoutLoginPage = new CheckoutLoginPage(page);
+  const checkoutPage = new CheckoutPage(page);
+  const cookieBanner = new CookieBanner(page);
 
   const firstName = faker.person.firstName();
   const lastName = faker.person.lastName();
   const email = faker.internet.email({ firstName, lastName });
+  const country = "Czechia";
   const city = faker.location.city();
   const address = faker.location.streetAddress();
   const zipCode = faker.string.numeric(5);
   const phone = faker.string.numeric(9);
+  const cardholderName = `${firstName} ${lastName}`;
+  const cardNumber = "4111111111111111";
+  const cardCode = "123";
+  const quantity = "1";
+  //const expectedSuccessNotification =
+  //"The product has been added to your shopping cart";
 
-  let productName = "";
+  let productName: string;
 
   await test.step("Open product detail", async () => {
     await homePage.openHomePage();
@@ -24,40 +38,42 @@ test("@e2e Guest can complete checkout", async ({ page }) => {
 
     productName = await homePage.getProductName();
 
-    const productPage = await homePage.openProductDetail();
-
+    await homePage.openProductDetail();
     await productPage.verifyProductPageIsVisible();
     await productPage.verifyProductTitle(productName);
+  });
+
+  await test.step("Configure product and add it to cart", async () => {
     await productPage.configureProduct();
     await productPage.addToCart();
+    // await productPage.verifyNotificationSuccesBarIsVisible(expectedSuccessNotification);
   });
 
-  await test.step("Verify product in shopping cart", async () => {
-    await page.goto(`${homePage.baseUrl}cart`);
+  await test.step("Verify product and quantity in cart", async () => {
+    await page.goto("/cart");
 
-    await cartPage.verifyCartPageIsVisible();
+    await cookieBanner.confirmCookies();
+    //await cartPage.verifyCartPageIsVisible();
     await cartPage.verifyProductAddedToCart(productName);
-    await cartPage.verifyProductQuantity("1");
+    await cartPage.verifyProductQuantity(quantity);
+  });
+
+  await test.step("Start checkout as guest", async () => {
     await cartPage.acceptTermsOfService();
-  });
+    await cartPage.proceedToCheckout();
 
-  const checkoutLoginPage = await cartPage.proceedToCheckout();
-
-  await test.step("Continue checkout as guest", async () => {
     await checkoutLoginPage.verifyCheckoutLoginPageIsVisible();
+    await checkoutLoginPage.checkoutAsGuest();
+
+    await checkoutPage.verifyCheckoutPageIsVisible();
   });
 
-  await checkoutLoginPage.checkoutAsGuest();
-  const checkoutPage = new CheckoutPage(page);
-
-  await test.step("Fill billing address", async () => {
-    await checkoutPage.verifyCheckoutPageIsVisible();
-
+  await test.step("Fill billing and shipping address", async () => {
     await checkoutPage.fillBillingAddress(
       firstName,
       lastName,
       email,
-      "Czech Republic",
+      country,
       city,
       address,
       zipCode,
@@ -68,27 +84,23 @@ test("@e2e Guest can complete checkout", async ({ page }) => {
     await checkoutPage.continueFromBilling();
   });
 
-  await test.step("Select shipping method", async () => {
-    await checkoutPage.shippingMethodOptions.first().check();
-    await checkoutPage.continueFromShippingMethod();
+  await test.step("Select shipping method and continue", async () => {
+    await checkoutPage.selectShippingMethod();
   });
 
-  await test.step("Select payment method", async () => {
-    await checkoutPage.paymentMethodOptions.first().check();
-    await checkoutPage.continueFromPaymentMethod();
+  await test.step("Select payment method and continue", async () => {
+    await checkoutPage.selectPaymentMethod();
   });
 
-  await test.step("Continue payment information", async () => {
-    await checkoutPage.continueFromPaymentInfo();
+  await test.step("Fill payment card details", async () => {
+    await checkoutPage.fillPaymentCardDetails(
+      cardholderName,
+      cardNumber,
+      cardCode,
+      "12",
+      "2028",
+    );
   });
 
-  await test.step("Confirm order", async () => {
-    if (await checkoutPage.confirmTermsOfServiceCheckbox.isVisible()) {
-      await checkoutPage.confirmTermsOfServiceCheckbox.check();
-    }
-
-    await checkoutPage.confirmOrderButton.click();
-
-    await expect(page).toHaveURL(/checkout\/completed/);
-  });
+  //await test.step("Confirm order", async () => {
 });

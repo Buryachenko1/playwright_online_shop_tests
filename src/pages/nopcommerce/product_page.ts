@@ -23,6 +23,8 @@ export class ProductPage {
 
   readonly fullDescription: Locator;
 
+  readonly notificationSuccesBar: Locator;
+
   constructor(page: Page) {
     this.page = page;
 
@@ -64,6 +66,8 @@ export class ProductPage {
     );
 
     this.fullDescription = this.productDetails.locator(".full-description");
+
+    this.notificationSuccesBar = page.locator(".bar-notification-success");
   }
 
   async verifyProductPageIsVisible(): Promise<ProductPage> {
@@ -107,5 +111,14 @@ export class ProductPage {
   async addToCart(): Promise<ProductPage> {
     await this.addToCartButton.click();
     return this;
+  }
+
+  async verifyNotificationSuccesBarIsVisible(
+    expectedSuccesNotification: string,
+  ): Promise<void> {
+    await expect(this.notificationSuccesBar).toBeVisible();
+    await expect(this.notificationSuccesBar).toHaveText(
+      expectedSuccesNotification,
+    );
   }
 }
