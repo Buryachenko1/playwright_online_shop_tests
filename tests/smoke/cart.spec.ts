@@ -16,14 +16,13 @@ test("@smoke Product can be added to cart", async ({ page }) => {
 
     await productPage.verifyProductPageIsVisible();
 
-    await productPage.processorSelect.selectOption({ index: 1 });
-    await productPage.ramSelect.selectOption({ index: 1 });
+    await productPage.configureProduct();
 
     await productPage.addToCart();
   });
 
   await test.step("Open shopping cart", async () => {
-    await page.goto(`${homePage.baseUrl}cart`);
+    await page.goto("/cart");
   });
 
   await test.step("Verify product is added to cart", async () => {
