@@ -23,7 +23,6 @@ export class CheckoutPage {
   readonly billingZipCodeInput: Locator;
   readonly billingPhoneInput: Locator;
   readonly billingFaxInput: Locator;
-  readonly shipToSameAddressCheckbox: Locator;
   readonly billingContinueButton: Locator;
 
   // Shipping address
@@ -121,10 +120,8 @@ export class CheckoutPage {
     this.billingFaxInput = this.billingAddressForm.locator(
       "#BillingNewAddress_FaxNumber",
     );
-    this.shipToSameAddressCheckbox =
-      this.billingSection.locator("#ShipToSameAddress");
     this.billingContinueButton = this.billingSection.locator(
-      "button.new-address-next-step-button",
+      "#billing-buttons-container .new-address-next-step-button",
     );
 
     // Shipping address
@@ -170,7 +167,7 @@ export class CheckoutPage {
       "#ShippingNewAddress_FaxNumber",
     );
     this.shippingContinueButton = this.shippingSection.locator(
-      "button.new-address-next-step-button",
+      "#shipping-buttons-container .new-address-next-step-button",
     );
 
     // Shipping method
@@ -180,8 +177,8 @@ export class CheckoutPage {
     this.shippingMethodForm = this.shippingMethodSection.locator(
       "#co-shipping-method-form",
     );
-    this.shippingMethodOptions = this.shippingMethodForm.locator(
-      'input[name="shippingoption"]',
+    this.shippingMethodOptions = page.locator(
+      '#opc-shipping_method input[name="shippingoption"]',
     );
     this.shippingMethodContinueButton = this.shippingMethodSection.locator(
       "button.shipping-method-next-step-button",
@@ -249,7 +246,7 @@ export class CheckoutPage {
     await this.billingLastNameInput.fill(lastName);
     await this.billingEmailInput.fill(email);
     await this.billingCountrySelect.selectOption({ label: country });
-    await this.billingStateSelect.selectOption({ label: "Hlavní město Praha" });
+    await this.billingStateSelect.selectOption({ value: "327" });
     await this.billingCityInput.fill(city);
     await this.billingAddress1Input.fill(address);
     await this.billingZipCodeInput.fill(zipCode);
@@ -259,11 +256,6 @@ export class CheckoutPage {
 
   async continueFromBilling(): Promise<CheckoutPage> {
     await this.billingContinueButton.click();
-    return this;
-  }
-
-  async continueFromShipping(): Promise<CheckoutPage> {
-    await this.shippingContinueButton.click();
     return this;
   }
 
@@ -279,7 +271,7 @@ export class CheckoutPage {
     return this;
   }
 
-  async fillPaymentCardDetails(
+  async fillPaymentInfo(
     cardholderName: string,
     cardNumber: string,
     cardCode: string,

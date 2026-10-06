@@ -6,6 +6,7 @@ import { CartPage } from "../../src/pages/nopcommerce/cart_page";
 import { CheckoutLoginPage } from "../../src/pages/nopcommerce/checkout_login_page";
 import { CheckoutPage } from "../../src/pages/nopcommerce/checkout_page";
 import { CookieBanner } from "../../src/pages/nopcommerce/cookie_banner";
+import { Header } from "../../src/pages/nopcommerce/header";
 
 test("@e2e Guest can complete checkout", async ({ page }) => {
   const homePage = new HomePage(page);
@@ -14,6 +15,7 @@ test("@e2e Guest can complete checkout", async ({ page }) => {
   const checkoutLoginPage = new CheckoutLoginPage(page);
   const checkoutPage = new CheckoutPage(page);
   const cookieBanner = new CookieBanner(page);
+  const header = new Header(page);
 
   const firstName = faker.person.firstName();
   const lastName = faker.person.lastName();
@@ -27,8 +29,6 @@ test("@e2e Guest can complete checkout", async ({ page }) => {
   const cardNumber = "4111111111111111";
   const cardCode = "123";
   const quantity = "1";
-  //const expectedSuccessNotification =
-  //"The product has been added to your shopping cart";
 
   let productName: string;
 
@@ -46,11 +46,10 @@ test("@e2e Guest can complete checkout", async ({ page }) => {
   await test.step("Configure product and add it to cart", async () => {
     await productPage.configureProduct();
     await productPage.addToCart();
-    // await productPage.verifyNotificationSuccesBarIsVisible(expectedSuccessNotification);
   });
 
   await test.step("Verify product and quantity in cart", async () => {
-    await page.goto("/cart");
+    await header.openCart();
 
     await cookieBanner.confirmCookies();
     //await cartPage.verifyCartPageIsVisible();
@@ -80,7 +79,6 @@ test("@e2e Guest can complete checkout", async ({ page }) => {
       phone,
     );
 
-    await checkoutPage.shipToSameAddressCheckbox.check();
     await checkoutPage.continueFromBilling();
   });
 
@@ -93,7 +91,7 @@ test("@e2e Guest can complete checkout", async ({ page }) => {
   });
 
   await test.step("Fill payment card details", async () => {
-    await checkoutPage.fillPaymentCardDetails(
+    await checkoutPage.fillPaymentInfo(
       cardholderName,
       cardNumber,
       cardCode,
