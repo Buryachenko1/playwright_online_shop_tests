@@ -3,13 +3,12 @@ import { test } from "@playwright/test";
 import { HomePage } from "../../src/pages/nopcommerce/home_page";
 import { ProductPage } from "../../src/pages/nopcommerce/product_page";
 import { CartPage } from "../../src/pages/nopcommerce/cart_page";
-import { CheckoutLoginPage } from "../../src/pages/nopcommerce/checkout_login_page";
 import { CheckoutPage } from "../../src/pages/nopcommerce/checkout_page";
 import { CookieBanner } from "../../src/pages/nopcommerce/cookie_banner";
 import { Header } from "../../src/pages/nopcommerce/header";
+import { CheckoutLoginPage } from "../../src/pages/nopcommerce/checkout_login_page";
 
 test("@smoke Guest can start checkout", async ({ page }) => {
-  // Page Objects
   const homePage = new HomePage(page);
   const productPage = new ProductPage(page);
   const cartPage = new CartPage(page);

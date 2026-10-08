@@ -12,6 +12,8 @@ export class CartPage {
   readonly productTitle: Locator;
   readonly productAttributes: Locator;
   readonly productPrice: Locator;
+  readonly shippingPrice: Locator;
+  readonly taxPrice: Locator;
   readonly productQuantity: Locator;
   readonly productSubtotal: Locator;
   readonly removeButton: Locator;
@@ -44,6 +46,12 @@ export class CartPage {
     this.productTitle = this.cartItem.locator("a.product-name");
     this.productAttributes = this.cartItem.locator(".attributes");
     this.productPrice = this.cartItem.locator(".product-unit-price");
+    this.shippingPrice = page.locator(
+      ".shopping-cart-page .cart-total .shipping-cost .value-summary",
+    );
+    this.taxPrice = page.locator(
+      ".shopping-cart-page .cart-total .tax-value .value-summary",
+    );
     this.productQuantity = this.cartItem.locator("input.qty-input");
     this.productSubtotal = this.cartItem.locator(".product-subtotal");
     this.removeButton = this.cartItem.locator("button.remove-btn");
@@ -97,6 +105,19 @@ export class CartPage {
   async verifyProductPrice(expectedPrice: string): Promise<CartPage> {
     await expect(this.productPrice).toHaveText(expectedPrice);
     return this;
+  }
+  async verifyShippingPrice(): Promise<string> {
+    await expect(this.shippingPrice).toBeVisible();
+    await expect(this.shippingPrice).toHaveText(/\d/);
+
+    return (await this.shippingPrice.innerText()).replace(/\s+/g, " ").trim();
+  }
+
+  async verifyTaxPrice(): Promise<string> {
+    await expect(this.taxPrice).toBeVisible();
+    await expect(this.taxPrice).toHaveText(/\d/);
+
+    return (await this.taxPrice.innerText()).replace(/\s+/g, " ").trim();
   }
 
   async verifyProductQuantity(expectedQuantity: string): Promise<CartPage> {
