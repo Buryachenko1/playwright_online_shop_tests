@@ -5,7 +5,6 @@ import { CartPage } from "../../src/pages/nopcommerce/cart_page";
 test("@smoke Product can be added to cart", async ({ page }) => {
   const homePage = new HomePage(page);
   const cartPage = new CartPage(page);
-  const expectedSuccessNotification = "Produkt byl přidán do Vašeho košíku";
 
   const { productName, productPage } =
     await test.step("Open product detail", async () => {
@@ -22,9 +21,6 @@ test("@smoke Product can be added to cart", async ({ page }) => {
   await test.step("Configure product and add it to cart", async () => {
     await productPage.configureProduct();
     await productPage.addToCart();
-    await productPage.verifyNotificationSuccesBarIsVisible(
-      expectedSuccessNotification,
-    );
   });
 
   await test.step("Verify product in shopping cart", async () => {

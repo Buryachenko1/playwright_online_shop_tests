@@ -41,41 +41,42 @@ test("@e2e Guest can complete checkout", async ({ page }) => {
   const quantity = "1";
   const expectedShippingMethod = "Ground";
   const expectedPaymentMethod = "Credit Card";
+  const completedOrderUrl = /\/checkout\/completed\/?(?:[?#].*)?$/;
 
-  const productName = await test.step("Open product detail", async () => {
+  // Values collected during the test
+  let productName: string;
+  let productPrice: string;
+  let shippingPrice: string;
+  let taxPrice: string;
+
+  await test.step("Open product detail", async () => {
     await homePage.openHomePage();
     await homePage.verifyHomePageIsVisible();
 
-    const name = await homePage.getProductName();
+    productName = await homePage.getProductName();
 
     await homePage.openProductDetail();
     await productPage.verifyProductPageIsVisible();
-    await productPage.verifyProductTitle(name);
-
-    return name;
+    await productPage.verifyProductTitle(productName);
   });
 
-  const productPrice =
-    await test.step("Configure product and add it to cart", async () => {
-      await productPage.configureProduct();
-      await productPage.addToCart();
+  await test.step("Configure product and add it to cart", async () => {
+    await productPage.configureProduct();
+    await productPage.addToCart();
 
-      return await productPage.getProductPrice();
-    });
+    productPrice = await productPage.getProductPrice();
+  });
 
-  const { shippingPrice, taxPrice } =
-    await test.step("Verify product, quantity and read cart charges", async () => {
-      await header.openCart();
-      await cookieBanner.confirmCookies();
+  await test.step("Verify product, quantity and read cart charges", async () => {
+    await header.openCart();
+    await cookieBanner.confirmCookies();
 
-      await cartPage.verifyProductAddedToCart(productName);
-      await cartPage.verifyProductQuantity(quantity);
+    await cartPage.verifyProductAddedToCart(productName);
+    await cartPage.verifyProductQuantity(quantity);
 
-      const shippingPrice = await cartPage.verifyShippingPrice();
-      const taxPrice = await cartPage.verifyTaxPrice();
-
-      return { shippingPrice, taxPrice };
-    });
+    shippingPrice = await cartPage.verifyShippingPrice();
+    taxPrice = await cartPage.verifyTaxPrice();
+  });
 
   await test.step("Start checkout as guest", async () => {
     await cartPage.acceptTermsOfService();
@@ -145,6 +146,6 @@ test("@e2e Guest can complete checkout", async ({ page }) => {
   await test.step("Confirm order and verify completion", async () => {
     await checkoutPage.confirmOrder();
 
-    await expect(page).toHaveURL(/\/checkout\/completed\/?(?:[?#].*)?$/);
+    await expect(page).toHaveURL(completedOrderUrl);
   });
 });
