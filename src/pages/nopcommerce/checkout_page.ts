@@ -248,9 +248,9 @@ export class CheckoutPage {
     // Product table
     this.summaryCart = this.orderSummary.locator("table.cart");
     this.productName = this.summaryCart.locator("td.product .product-name");
-    this.productPrice = this.summaryCart.locator("td.unit-price");
-    this.productQuantity = this.summaryCart.locator("td.quantity");
-    this.productSubtotal = this.summaryCart.locator("td.subtotal");
+    this.productPrice = this.summaryCart.locator(".product-unit-price");
+    this.productQuantity = this.summaryCart.locator(".product-quantity");
+    this.productSubtotal = this.summaryCart.locator(".product-subtotal");
 
     // Order total
     this.summaryShippingPrice = this.orderSummary.locator(
