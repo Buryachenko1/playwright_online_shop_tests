@@ -286,7 +286,6 @@ export class CheckoutPage {
     zipCode: string,
     phone: string,
   ): Promise<CheckoutPage> {
-    // Verify the checkbox is checked by default.
     await expect(this.shipToSameAddressCheckbox).toBeVisible();
     await expect(this.shipToSameAddressCheckbox).toBeChecked();
 
@@ -297,7 +296,6 @@ export class CheckoutPage {
     await this.billingCountrySelect.selectOption({ label: country });
     await expect(this.billingStateLoading).toBeHidden();
 
-    // Prague — this scenario uses Czechia.
     await this.billingStateSelect.selectOption({ value: "327" });
     await expect(this.billingStateSelect).toHaveValue("327");
 

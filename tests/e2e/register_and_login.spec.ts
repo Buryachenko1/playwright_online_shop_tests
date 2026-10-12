@@ -17,7 +17,7 @@ test("@e2e New user can register and log in", async ({ page }) => {
   const firstName = faker.person.firstName();
   const lastName = faker.person.lastName();
   const email = faker.internet.email();
-  const password = "TestPassword123!";
+  const password = process.env.TEST_USER_PASSWORD!;
   const confirmPassword = password;
 
   const userData = {
@@ -48,7 +48,7 @@ test("@e2e New user can register and log in", async ({ page }) => {
   await test.step("Open My Account and verify page is visible", async () => {
     await registrationResultPage.header.openMyAccount();
     await accountPage.verifyAccountPageHasUrl();
-    await accountPage.verifyAccountPageIsVisible();
+    await accountPage.verifyAccountPageDetails();
   });
 
   await test.step("Verify created user", async () => {

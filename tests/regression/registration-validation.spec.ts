@@ -18,7 +18,7 @@ test.describe("DDT Registration validation", () => {
   test.beforeEach(async ({ page }) => {
     registrationPage = new RegistrationPage(page);
 
-    const password = "Password123!";
+    const password = process.env.TEST_USER_PASSWORD!;
 
     userData = {
       firstName: faker.person.firstName(),

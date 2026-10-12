@@ -11,7 +11,7 @@ test("@smoke Registration is successful", async ({ page }) => {
   const firstName = faker.person.firstName();
   const lastName = faker.person.lastName();
   const email = faker.internet.email();
-  const password = faker.internet.password();
+  const password = process.env.TEST_USER_PASSWORD!;
   const confirmPassword = password;
 
   await test.step("Open registration page", async () => {
@@ -38,10 +38,11 @@ test("@smoke Registration is successful", async ({ page }) => {
 });
 
 test("@smoke Login is successful", async ({ page }) => {
+  const homePage = new HomePage(page);
   const loginPage = new LoginPage(page);
 
-  const email = "testuser@example.com";
-  const password = "TestPassword123!";
+  const email = process.env.TEST_USER_EMAIL!;
+  const password = process.env.TEST_USER_PASSWORD!;
 
   await test.step("Open login page", async () => {
     await loginPage.openLoginNopcommerce();
@@ -54,4 +55,12 @@ test("@smoke Login is successful", async ({ page }) => {
   await test.step("Login with valid credentials", async () => {
     await loginPage.login(email, password);
   });
+  await test.step("Verify login is successful", async () => {
+    await expect(homePage.header.myAccountLink).toBeVisible();
+    await expect(homePage.header.logoutLink).toBeVisible();
+    await expect(homePage.header.loginLink).toBeHidden();
+  });
 });
+function expect(myAccountLink: any) {
+  throw new Error("Function not implemented.");
+}
