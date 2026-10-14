@@ -1,8 +1,9 @@
-import { test } from "@playwright/test";
+import { test, expect } from "@playwright/test";
 import { faker } from "@faker-js/faker";
 import { LoginPage } from "../../src/pages/nopcommerce/login_page";
 import { RegistrationPage } from "../../src/pages/nopcommerce/registration_page";
 import { RegistrationResultPage } from "../../src/pages/nopcommerce/registration_result_page";
+import { HomePage } from "../../src/pages/nopcommerce/home_page";
 
 test("@smoke Registration is successful", async ({ page }) => {
   const registrationPage = new RegistrationPage(page);
@@ -61,6 +62,3 @@ test("@smoke Login is successful", async ({ page }) => {
     await expect(homePage.header.loginLink).toBeHidden();
   });
 });
-function expect(myAccountLink: any) {
-  throw new Error("Function not implemented.");
-}

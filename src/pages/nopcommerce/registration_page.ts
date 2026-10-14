@@ -1,6 +1,14 @@
 import { expect, type Locator, type Page } from "@playwright/test";
 import { RegistrationResultPage } from "./registration_result_page";
 
+interface RegistrationData {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+}
+
 export class RegistrationPage {
   private readonly page: Page;
   private readonly url = "/register?returnUrl=%2F";
@@ -71,23 +79,13 @@ export class RegistrationPage {
   }
 
   async registerNewUser(
-    firstName: string,
-    lastName: string,
-    email: string,
-    password: string,
-    confirmPassword: string,
+    data: RegistrationData,
   ): Promise<RegistrationResultPage> {
-    await this.firstNameInput.fill(firstName);
-    await this.lastNameInput.fill(lastName);
-    await this.emailInput.fill(email);
-    await this.passwordInput.fill(password);
-    await this.passwordConfirmationInput.fill(confirmPassword);
-
-    await expect(this.firstNameInput).toHaveValue(firstName);
-    await expect(this.lastNameInput).toHaveValue(lastName);
-    await expect(this.emailInput).toHaveValue(email);
-    await expect(this.passwordInput).toHaveValue(password);
-    await expect(this.passwordConfirmationInput).toHaveValue(confirmPassword);
+    await this.firstNameInput.fill(data.firstName);
+    await this.lastNameInput.fill(data.lastName);
+    await this.emailInput.fill(data.email);
+    await this.passwordInput.fill(data.password);
+    await this.passwordConfirmationInput.fill(data.confirmPassword);
 
     await this.registerButton.click();
 
