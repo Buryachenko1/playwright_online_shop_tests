@@ -1,0 +1,22 @@
+name: Trigger local Playwright tests
+
+on:
+  push:
+    branches: [nopcommerce]
+
+permissions: {}
+
+jobs:
+  trigger:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Start private workflow
+        env:
+          GH_TOKEN: ${{ secrets.LOCAL_CI_TOKEN }}
+        run: |
+          gh workflow run playwright.yml \
+            --repo Buryachenko1/playwright_local_ci \
+            --ref main
+
