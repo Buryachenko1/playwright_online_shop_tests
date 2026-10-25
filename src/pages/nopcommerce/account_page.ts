@@ -277,9 +277,9 @@ export class AccountPage {
   }
 
   async verifyAccountData(accountData: AccountData): Promise<AccountPage> {
-    await expect(this.firstNameInput).toHaveValue(accountData.firstName);
-    await expect(this.lastNameInput).toHaveValue(accountData.lastName);
-    await expect(this.emailInput).toHaveValue(accountData.email);
+    await expect.soft(this.firstNameInput).toHaveValue(accountData.firstName);
+    await expect.soft(this.lastNameInput).toHaveValue(accountData.lastName);
+    await expect.soft(this.emailInput).toHaveValue(accountData.email);
 
     return this;
   }

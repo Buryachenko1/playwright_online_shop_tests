@@ -65,6 +65,12 @@ test("@e2e Guest can complete checkout", async ({ page }) => {
     await productPage.addToCart();
 
     productPrice = await productPage.getProductPrice();
+
+    console.log("[Product] Add-to-cart action completed", {
+      Product: productName,
+      Quantity: quantity,
+      "Product Price": productPrice,
+    });
   });
 
   await test.step("Verify product, quantity and read cart charges", async () => {
@@ -76,6 +82,13 @@ test("@e2e Guest can complete checkout", async ({ page }) => {
 
     shippingPrice = await cartPage.verifyShippingPrice();
     taxPrice = await cartPage.verifyTaxPrice();
+
+    console.log("[Cart] Product and quantity verified; charges collected", {
+      Product: productName,
+      Quantity: quantity,
+      "Shipping price": shippingPrice,
+      "Tax price": taxPrice,
+    });
   });
 
   await test.step("Start checkout as guest", async () => {
@@ -120,6 +133,13 @@ test("@e2e Guest can complete checkout", async ({ page }) => {
   });
 
   await test.step("Verify addresses, payment and shipping in summary", async () => {
+    console.log("[Summary] Expected checkout options", {
+      Country: country,
+      Province: stateProvince,
+      "Payment method": expectedPaymentMethod,
+      "Shipping method": expectedShippingMethod,
+    });
+
     await checkoutPage.verifyOrderSummaryWraps(
       firstName,
       lastName,
@@ -137,15 +157,32 @@ test("@e2e Guest can complete checkout", async ({ page }) => {
 
   await test.step("Verify product, quantity and price in summary", async () => {
     await checkoutPage.verifySummaryCart(productName, productPrice);
+    console.log("[Summary] Expected product values", {
+      Product: productName,
+      "Product price": productPrice,
+      Quantity: quantity,
+    });
   });
 
   await test.step("Verify shipping, tax and order total", async () => {
+    console.log("[Summary] Values used to verify order total", {
+      "Product price": productPrice,
+      "Shipping price": shippingPrice,
+      "Tax price": taxPrice,
+    });
+
     await checkoutPage.verifyOrderTotal(productPrice, shippingPrice, taxPrice);
   });
 
   await test.step("Confirm order and verify completion", async () => {
+    console.log("[Order] Submitting order");
+
     await checkoutPage.confirmOrder();
 
     await expect(page).toHaveURL(completedOrderUrl);
+
+    console.log("[Order] Completion URL verified", {
+      url: page.url(),
+    });
   });
 });
