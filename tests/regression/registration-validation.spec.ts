@@ -5,49 +5,37 @@ import { RegistrationPage } from "../../src/pages/nopcommerce/registration_page"
 import ddtData from "../../src/assets/ddt/registration_validation_data.json";
 
 test.describe("DDT Registration validation", () => {
-  let registrationPage: RegistrationPage;
-
-  let userData: {
-    firstName: string;
-    lastName: string;
-    email: string;
-    password: string;
-    confirmPassword: string;
-  };
-
-  test.beforeEach(async ({ page }) => {
-    registrationPage = new RegistrationPage(page);
-
-    const password = process.env.TEST_USER_PASSWORD!;
-
-    userData = {
-      firstName: faker.person.firstName(),
-      lastName: faker.person.lastName(),
-      email: faker.internet.email(),
-      password: password,
-      confirmPassword: password,
-    };
-
-    await registrationPage.openRegistrationNopcommerce();
-  });
-
   ddtData.forEach((data, index) => {
-    const testIndex = index + 1;
+    test(`Test ${index + 1} - ${data.testName}`, async ({ page }) => {
+      const registrationPage = new RegistrationPage(page);
+      const password = process.env.TEST_USER_PASSWORD;
 
-    test(`Test ${testIndex} - ${data.testName}`, async () => {
+      if (!password) {
+        throw new Error(
+          "Missing required environment variable: TEST_USER_PASSWORD",
+        );
+      }
+
+      const userData = {
+        firstName: faker.person.firstName(),
+        lastName: faker.person.lastName(),
+        email: `test-${faker.string.uuid()}@example.com`,
+        password,
+        confirmPassword: password,
+      };
+
       const testData = {
         ...userData,
         ...data.overrides,
       };
 
+      await test.step("Open registration page", async () => {
+        await registrationPage.openRegistrationNopcommerce();
+        await registrationPage.verifyRegistrationPageIsVisible();
+      });
+
       await test.step("Fill registration form and submit", async () => {
-        await registrationPage.registerNewUser(
-          testData.firstName,
-          testData.lastName,
-          testData.email,
-          testData.password,
-          testData.confirmPassword,
-        );
+        await registrationPage.registerNewUser(testData);
       });
 
       await test.step("Verify validation error message", async () => {
@@ -65,16 +53,15 @@ test.describe("DDT Registration validation", () => {
             break;
 
           case "missing password":
-            await registrationPage.verifyPasswordError(data.expectedError);
-            break;
-
           case "missing password confirmation":
-            await registrationPage.verifyPasswordError(data.expectedError);
-            break;
-
           case "missing both passwords":
             await registrationPage.verifyPasswordError(data.expectedError);
             break;
+
+          default:
+            throw new Error(
+              `Missing validation assertion for scenario: ${data.testName}`,
+            );
         }
       });
     });
